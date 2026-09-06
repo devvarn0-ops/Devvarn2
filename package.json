@@ -1,0 +1,11 @@
+{
+  "name": "profex-dashboard",
+  "version": "1.0.0",
+  "description": "PROFEX Device Management Console — Firebase-based SMS dashboard",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'Static site — no build step required'"
+  },
+  "keywords": ["firebase", "sms", "dashboard", "device-management"],
+  "license": "MIT"
+}
